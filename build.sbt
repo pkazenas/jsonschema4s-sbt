@@ -1,10 +1,4 @@
-import java.net.URLClassLoader
-
-import pl.pkazenas.jsonschema4s.Api._
-import pl.pkazenas.jsonschema4s.JsonDataContract
-import pl.pkazenas.jsonschema4s.util.ClasspathScanner
-
-import scala.reflect.internal.util.ScalaClassLoader
+resolvers += "jitpack" at "https://jitpack.io"
 
 name := "jsonschema4s-sbt"
 
