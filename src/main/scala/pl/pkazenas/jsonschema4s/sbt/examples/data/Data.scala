@@ -1,6 +1,6 @@
 package pl.pkazenas.jsonschema4s.sbt.examples.data
 
-import pl.pkazenas.jsonschema4s.sbt.core.JsonDataContract
+import pl.pkazenas.jsonschema4s.JsonDataContract
 
 
 case class Pet(name: String, petType: String)

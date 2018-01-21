@@ -8,6 +8,8 @@ import scala.reflect.internal.util.ScalaClassLoader
 
 name := "jsonschema4s-sbt"
 
+organization := "pl.pkazenas"
+
 version := "0.1.0"
 
 scalaVersion := "2.12.4"
@@ -21,18 +23,3 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "org.reflections" % "reflections" % "0.9.11",
 )
-
-lazy val reflect = taskKey[Unit]("Prints 'Hello World'")
-
-reflect := {
-  import scala.reflect.runtime.universe._
-
-  val classes = (fullClasspath in Runtime).value.files
-  val classLoader =  ScalaClassLoader.fromURLs(classes.map(_.asURL))// new URLClassLoader( classes.map(_.asURL).toArray, ClassLoader.getSystemClassLoader)
-
-  val ss = ClasspathScanner(classLoader)
-  val subclasses = ss.findSubclasses(typeOf[JsonDataContract])
-  subclasses.foreach(sc => {
-    println(toModel(sc))
-  })
-}

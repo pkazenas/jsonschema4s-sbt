@@ -1,7 +1,7 @@
 package pl.pkazenas.jsonschema4s.sbt.core.reflection.impl
 
 import org.reflections.Reflections
-import pl.pkazenas.jsonschema4s.sbt.core.JsonDataContract
+import pl.pkazenas.jsonschema4s.JsonDataContract
 import pl.pkazenas.jsonschema4s.sbt.core.reflection.ClassScanner
 
 import scala.collection.JavaConverters._
