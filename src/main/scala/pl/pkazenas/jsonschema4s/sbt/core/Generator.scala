@@ -8,7 +8,7 @@ import scala.reflect.runtime.universe._
 object Generator {
 
   case class Params(packages: List[String],
-                    output: String => Unit = (str) => println(str),
+                    output: (String, String) => Unit = (name, contents) => println(s"$name\n$contents"),
                     classLoader: ClassLoader = ClassLoader.getSystemClassLoader,
                     classScanner: ClassScanner.Type = ClassScanner.TraitBased,
                     schemaGenerator: JsonSchemaGenerator.Type = JsonSchemaGenerator.JsonSchema4s)
@@ -17,8 +17,6 @@ object Generator {
     println(
       s"""
          | classLoader: ${params.classLoader},
-         | classLoaderParent: ${params.classLoader.getParent},
-         | output: ${params.output},
          | packages: ${params.packages}
        """.stripMargin)
     val classScanner = ClassScanner.scanner(params.classScanner)
@@ -30,10 +28,10 @@ object Generator {
         .scan(packageName, params.classLoader)
         .foreach(clazz => {
           val `type` = mirror.staticClass(clazz.getName).toType
+          val typeName = `type`.dealias.typeSymbol.name
           schemaGenerator
             .generate(`type`, params.classLoader)
-            //.map(params.output(_))
-            .fold(ex => ex.printStackTrace(), params.output(_))
+            .fold(ex => ex.printStackTrace(), params.output(typeName.toString, _))
         })
     })
   }
