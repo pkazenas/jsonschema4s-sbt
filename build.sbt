@@ -10,7 +10,7 @@ scalaVersion := "2.12.4"
 
 crossScalaVersions := Seq("2.11.8", "2.12.4")
 
-crossSbtVersions := Vector("0.13.16", "1.0.3")
+crossSbtVersions := Seq("0.13.16", "1.0.3")
 
 publishM2 := {
   publishM2.value
