@@ -13,7 +13,7 @@ crossScalaVersions := Seq("2.11.8", "2.12.4")
 sbtPlugin := true
 
 libraryDependencies ++= Seq(
-  "pl.pkazenas" %% "jsonschema4s" % "0.1.1",
+  "pl.pkazenas" %% "jsonschema4s" % "0.1.3",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "org.reflections" % "reflections" % "0.9.11",
 )
