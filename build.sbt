@@ -4,11 +4,13 @@ name := "jsonschema4s-sbt"
 
 organization := "pl.pkazenas"
 
-version := "0.1.0"
+version := "0.1.1"
 
 scalaVersion := "2.12.4"
 
 crossScalaVersions := Seq("2.11.8", "2.12.4")
+
+crossSbtVersions := Vector("0.13.16", "1.0.3")
 
 sbtPlugin := true
 
