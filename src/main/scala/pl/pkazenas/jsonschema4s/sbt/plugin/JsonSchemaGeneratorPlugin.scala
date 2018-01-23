@@ -14,11 +14,11 @@ import scala.util.{Failure, Success, Try}
 object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
 
   object autoImport extends AnyRef {
-    val generateJsonSchema = inputKey[Unit]("generate json schema")
+    val generateJsonSchema = taskKey[Unit]("generate json schema")
     val packages = settingKey[List[String]]("packages to scan")
     val outputPath = settingKey[Option[String]]("output")
 
-    lazy val defaultSettings: Seq[Def.Setting[_]] = Seq(
+    lazy val generateJsonSchemaSettings: Seq[Def.Setting[_]] = Seq(
       generateJsonSchema := {
         println("Json schema generation started")
         val classes = (fullClasspath in Runtime).value.files
@@ -27,16 +27,17 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
         Generator
           .generate(
             Params(
-              (packages in Compile).value,
+              (packages in generateJsonSchema).value,
               (typeName, contents) => {
-                val out = (outputPath in Compile).value
+                val out = (outputPath in generateJsonSchema).value
                 println(s"outputPath set to ${out getOrElse ""}")
+
                 out.fold {
                   println(s"type: $typeName \n contents: \n$contents")
                 }(path => {
 
-                  val filePath = s"$path\\$typeName.json"
-                  println(s"Writing json shema to file: $filePath")
+                  val filePath = s"$path/$typeName.json"
+                  println(s"Writing json schema to file: $filePath")
 
                   Try {
                     val writer = new PrintWriter(new File(filePath))
@@ -60,7 +61,9 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
 
   import autoImport._
 
+  override def requires = sbt.plugins.JvmPlugin
+
   override def trigger = allRequirements
 
-  override def projectSettings = inConfig(Compile)(defaultSettings)
+  override val projectSettings = generateJsonSchemaSettings
 }
