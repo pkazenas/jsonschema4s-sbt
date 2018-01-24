@@ -2,6 +2,7 @@ package pl.pkazenas.jsonschema4s.sbt.plugin
 
 import java.io.PrintWriter
 import java.net.URLClassLoader
+import java.nio.file.Paths
 
 import pl.pkazenas.jsonschema4s.sbt.core.Generator
 import pl.pkazenas.jsonschema4s.sbt.core.Generator.Params
@@ -36,11 +37,12 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
                   println(s"type: $typeName \n contents: \n$contents")
                 }(path => {
 
-                  val filePath = s"$path/$typeName.json"
+
+                  val filePath = Paths.get(path, s"$typeName.json")
                   println(s"Writing json schema to file: $filePath")
 
                   Try {
-                    val writer = new PrintWriter(new File(filePath))
+                    val writer = new PrintWriter(new File(filePath.toUri))
                     writer.write(contents)
                     writer.close()
                   } match {

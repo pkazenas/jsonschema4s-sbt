@@ -2,7 +2,7 @@ name := "jsonschema4s-sbt"
 
 organization := "pl.pkazenas"
 
-version := "0.1.3"
+version := "0.1.4"
 
 scalaVersion := "2.12.4"
 sbtVersion := "1.1.0"
