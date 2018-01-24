@@ -19,21 +19,17 @@ object Generator {
          | classLoader: ${params.classLoader},
          | packages: ${params.packages}
        """.stripMargin)
-    val classScanner = ClassScanner.scanner(params.classScanner)
-    val schemaGenerator = JsonSchemaGenerator.generator(params.schemaGenerator)
-    val mirror = runtimeMirror(params.classLoader)
 
-    params.packages.foreach(packageName => {
-      classScanner
-        .scan(packageName, params.classLoader)
-        .foreach(clazz => {
-          val `type` = mirror.staticClass(clazz.getName).toType
-          val typeName = `type`.dealias.typeSymbol.name
-          schemaGenerator
-            .generate(`type`, params.classLoader)
-            .fold(ex => ex.printStackTrace(), params.output(typeName.toString, _))
-        })
-    })
+    val schemaGenerator = JsonSchemaGenerator.generator(params.schemaGenerator)
+
+    ClassScanner(params.classScanner)
+      .scan(params.packages, params.classLoader)
+      .foreach(`type` => {
+        val typeName = `type`.dealias.typeSymbol.name
+        schemaGenerator
+          .generate(`type`, params.classLoader)
+          .fold(ex => ex.printStackTrace(), params.output(typeName.toString, _))
+      })
   }
 }
 

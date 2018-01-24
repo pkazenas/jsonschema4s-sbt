@@ -2,10 +2,11 @@ name := "jsonschema4s-sbt"
 
 organization := "pl.pkazenas"
 
-version := "0.1.4"
+version := "0.2.0"
 
 scalaVersion := "2.12.4"
 sbtVersion := "1.1.0"
+
 
 sbtPlugin := true
 

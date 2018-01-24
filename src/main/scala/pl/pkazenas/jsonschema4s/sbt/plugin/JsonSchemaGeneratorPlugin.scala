@@ -2,11 +2,11 @@ package pl.pkazenas.jsonschema4s.sbt.plugin
 
 import java.io.PrintWriter
 import java.net.URLClassLoader
-import java.nio.file.Paths
+import java.nio.file.{Files, Paths}
 
 import pl.pkazenas.jsonschema4s.sbt.core.Generator
 import pl.pkazenas.jsonschema4s.sbt.core.Generator.Params
-import sbt.Keys.fullClasspath
+import sbt.Keys.{fullClasspath, target}
 import sbt._
 
 import scala.reflect.internal.util.ScalaClassLoader
@@ -17,7 +17,7 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
   object autoImport extends AnyRef {
     val generateJsonSchema = taskKey[Unit]("generate json schema")
     val packages = settingKey[List[String]]("packages to scan")
-    val outputPath = settingKey[Option[String]]("output")
+    val outputPath = settingKey[Option[String]]("output directory")
 
     lazy val generateJsonSchemaSettings: Seq[Def.Setting[_]] = Seq(
       generateJsonSchema := {
@@ -30,15 +30,20 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
             Params(
               (packages in generateJsonSchema).value,
               (typeName, contents) => {
+
                 val out = (outputPath in generateJsonSchema).value
                 println(s"outputPath set to ${out getOrElse ""}")
 
                 out.fold {
                   println(s"type: $typeName \n contents: \n$contents")
-                }(path => {
+                }(p => {
+                  val path = Paths.get(p)
+                  if(!Files.exists(path)) {
+                    println(s"creating output directory: ${p}")
+                    Files.createDirectory(path)
+                  }
 
-
-                  val filePath = Paths.get(path, s"$typeName.json")
+                  val filePath = Paths.get(p, s"$typeName.json")
                   println(s"Writing json schema to file: $filePath")
 
                   Try {
@@ -58,7 +63,8 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
         println("Json schema generation finished")
       },
       packages in generateJsonSchema := List(),
-      outputPath in generateJsonSchema := None)
+      outputPath in generateJsonSchema := Some((target.value / "json-schema").getAbsolutePath)
+    )
   }
 
   import autoImport._

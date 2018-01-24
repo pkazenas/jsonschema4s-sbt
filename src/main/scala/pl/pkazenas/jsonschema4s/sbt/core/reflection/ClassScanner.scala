@@ -1,10 +1,10 @@
 package  pl.pkazenas.jsonschema4s.sbt.core.reflection
 
 import pl.pkazenas.jsonschema4s.sbt.core.reflection.impl.TraitBasedClassScanner
-
+import scala.reflect.runtime.universe._
 
 trait ClassScanner[LowerBoundType] {
-  def scan(packageName: String, classLoader: ClassLoader): List[Class[_ <: LowerBoundType]]
+  def scan(packages: List[String], classLoader: ClassLoader): List[Type]
 }
 
 object ClassScanner {
@@ -12,7 +12,7 @@ object ClassScanner {
   sealed trait Type
   case object TraitBased extends Type
 
-  def scanner[ClassScanner[_]](`type`: Type) =
+  def apply[ClassScanner[_]](`type`: Type) =
     `type` match {
       case TraitBased => TraitBasedClassScanner
     }

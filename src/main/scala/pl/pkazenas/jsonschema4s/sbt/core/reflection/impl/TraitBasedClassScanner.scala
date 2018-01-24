@@ -1,19 +1,16 @@
 package pl.pkazenas.jsonschema4s.sbt.core.reflection.impl
 
-import org.reflections.Reflections
 import pl.pkazenas.jsonschema4s.JsonDataContract
 import pl.pkazenas.jsonschema4s.sbt.core.reflection.ClassScanner
+import pl.pkazenas.jsonschema4s.util.ClasspathScanner
 
-import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
+import scala.reflect.runtime.universe._
 
 object TraitBasedClassScanner extends ClassScanner[JsonDataContract] {
-  override def scan(packageName: String, classLoader: ClassLoader): List[Class[_ <: JsonDataContract]] =
+  override def scan(packages: List[String], classLoader: ClassLoader): List[Type] =
     Try {
-      (new Reflections(packageName, classLoader))
-        .getSubTypesOf(classOf[JsonDataContract])
-        .asScala
-        .toList
+      ClasspathScanner(classLoader, packages).findSubclasses(typeOf[JsonDataContract])
     } match {
       case Success(result) => result
       case Failure(exception) => println(exception); List()
