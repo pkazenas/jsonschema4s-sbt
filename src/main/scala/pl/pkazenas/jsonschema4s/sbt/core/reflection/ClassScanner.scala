@@ -1,6 +1,7 @@
 package  pl.pkazenas.jsonschema4s.sbt.core.reflection
 
-import pl.pkazenas.jsonschema4s.sbt.core.reflection.impl.TraitBasedClassScanner
+import pl.pkazenas.jsonschema4s.sbt.core.reflection.impl.{AnnotationBasedClassScanner, TraitBasedClassScanner}
+
 import scala.reflect.runtime.universe._
 
 trait ClassScanner[LowerBoundType] {
@@ -9,11 +10,13 @@ trait ClassScanner[LowerBoundType] {
 
 object ClassScanner {
 
-  sealed trait Type
-  case object TraitBased extends Type
+  sealed trait ScannerType
+  case object TraitBased extends ScannerType
+  case object AnnotationBased extends ScannerType
 
-  def apply[ClassScanner[_]](`type`: Type) =
-    `type` match {
+  def apply[ClassScanner[_]](scannerType: ScannerType) =
+    scannerType match {
       case TraitBased => TraitBasedClassScanner
+      case AnnotationBased => AnnotationBasedClassScanner
     }
 }

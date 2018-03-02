@@ -25,36 +25,37 @@ object JsonSchemaGeneratorPlugin extends sbt.AutoPlugin {
         val classes = (fullClasspath in Runtime).value.files
         val classLoader = ScalaClassLoader.fromURLs(classes.map(_.asURL))
 
+        def writeJsonToFile(p: String, typeName: String, contents: String) = {
+          val path = Paths.get(p)
+          if(!Files.exists(path)) {
+            println(s"creating output directory: ${p}")
+            Files.createDirectory(path)
+          }
+
+          val filePath = Paths.get(p, s"$typeName.json")
+          println(s"Writing json schema to file: $filePath")
+
+          Try {
+            val writer = new PrintWriter(new File(filePath.toUri))
+            writer.write(contents)
+            writer.close()
+          } match {
+            case Success(_) => println(s"Successfully written file: $filePath")
+            case Failure(ex) => ex.printStackTrace()
+          }
+        }
+
         Generator
           .generate(
             Params(
               (packages in generateJsonSchema).value,
               (typeName, contents) => {
-
                 val out = (outputPath in generateJsonSchema).value
                 println(s"outputPath set to ${out getOrElse ""}")
 
                 out.fold {
                   println(s"type: $typeName \n contents: \n$contents")
-                }(p => {
-                  val path = Paths.get(p)
-                  if(!Files.exists(path)) {
-                    println(s"creating output directory: ${p}")
-                    Files.createDirectory(path)
-                  }
-
-                  val filePath = Paths.get(p, s"$typeName.json")
-                  println(s"Writing json schema to file: $filePath")
-
-                  Try {
-                    val writer = new PrintWriter(new File(filePath.toUri))
-                    writer.write(contents)
-                    writer.close()
-                  } match {
-                    case Success(_) => println(s"Successfully written file: $filePath")
-                    case Failure(ex) => ex.printStackTrace()
-                  }
-                })
+                }(p => writeJsonToFile(p, typeName, contents))
               },
               classLoader
             )

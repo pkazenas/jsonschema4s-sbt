@@ -1,8 +1,11 @@
+resolvers +=
+  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/releases"
+
 name := "jsonschema4s-sbt"
 
 organization := "pl.pkazenas"
 
-version := "0.2.0"
+version := "0.3.0"
 
 scalaVersion := "2.12.4"
 sbtVersion := "1.1.0"
@@ -11,7 +14,7 @@ sbtVersion := "1.1.0"
 sbtPlugin := true
 
 libraryDependencies ++= Seq(
-  "pl.pkazenas" %% "jsonschema4s" % "0.1.5",
+  "pl.pkazenas" %% "jsonschema4s" % "0.3.4",
   "org.scala-lang" % "scala-reflect" % scalaVersion.value,
   "org.reflections" % "reflections" % "0.9.11",
 )

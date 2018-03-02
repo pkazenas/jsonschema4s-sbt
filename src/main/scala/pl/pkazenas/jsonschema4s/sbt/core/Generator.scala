@@ -10,7 +10,7 @@ object Generator {
   case class Params(packages: List[String],
                     output: (String, String) => Unit = (name, contents) => println(s"$name\n$contents"),
                     classLoader: ClassLoader = ClassLoader.getSystemClassLoader,
-                    classScanner: ClassScanner.Type = ClassScanner.TraitBased,
+                    classScanner: ClassScanner.ScannerType = ClassScanner.AnnotationBased,
                     schemaGenerator: JsonSchemaGenerator.Type = JsonSchemaGenerator.JsonSchema4s)
 
   def generate(params: Params) = {
